@@ -341,7 +341,7 @@ class Degoss(object):
         status, _, response = self.request(release_url)
 
         # write to a file
-        with open(self.executable, 'wb') as f:
+        with open(self.executable, 'w') as f:
             # buffered read at 8KiB chunks
             #chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
             chunk = response.read(BUFFER_SIZE)
