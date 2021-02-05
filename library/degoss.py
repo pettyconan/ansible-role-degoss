@@ -343,17 +343,15 @@ class Degoss(object):
         # write to a file
         with open(self.executable, 'w') as f:
             # buffered read at 8KiB chunks
-            chunk = response.read(BUFFER_SIZE)
+            chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
 
             # bytes to str for python3 file.write() support
             if isinstance(chunk, bytes):
-                    chunk = chunk.decode(encoding='windows-1252')
+                    chunk = chunk.decode(encoding='cp437')
 
             while chunk:
                 f.write(chunk)
-                chunk = response.read(BUFFER_SIZE)
-                if isinstance(chunk, bytes):
-                    chunk = chunk.decode(encoding='windows-1252')
+                chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
 
             response.close()
 
@@ -362,6 +360,12 @@ class Degoss(object):
             os.chmod(self.executable, 0o0700)
 
         self.logger.debug("Successfully installed the binary to %s", self.executable)
+
+    def decode_if_byte(self, chunk):
+        if isinstance(chunk, bytes):
+            return chunk.decode(encoding='cp437')
+        else:
+            return chunk
 
     def test(self):
         """Execute the test cases."""
