@@ -334,7 +334,7 @@ class Degoss(object):
         """Install the Goss binary."""
         release_url = self.get_release_url()
 
-
+        self.logger.debug(f"URL: {release_url}")
 
         self.logger.info("Installing the Goss binary from %s into %s", release_url, self.bin_dir)
 
