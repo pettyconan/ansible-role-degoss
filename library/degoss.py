@@ -352,7 +352,8 @@ class Degoss(object):
             while chunk:
                 f.write(chunk)
                 chunk = response.read(BUFFER_SIZE)
-                chunk = chunk.decode(encoding='windows-1252')
+                if isinstance(chunk, bytes):
+                    chunk = chunk.decode(encoding='windows-1252')
 
             response.close()
 
