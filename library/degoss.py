@@ -342,14 +342,16 @@ class Degoss(object):
 
         # write to a file
         with open(self.executable, 'w') as f:
+
+            shutil.copyfileobj(response.read(), f)
             # buffered read at 8KiB chunks
             #chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
-            chunk = response.read(BUFFER_SIZE)
+            #chunk = response.read(BUFFER_SIZE)
 
-            while chunk:
-                f.write(chunk)
+            #while chunk:
+                #f.write(chunk)
                 #chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
-                chunk = response.read(BUFFER_SIZE)
+                #chunk = response.read(BUFFER_SIZE)
 
             response.close()
 
