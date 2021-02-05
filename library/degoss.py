@@ -334,8 +334,6 @@ class Degoss(object):
         """Install the Goss binary."""
         release_url = self.get_release_url()
 
-        self.logger.debug(f"URL: {release_url}")
-
         self.logger.info("Installing the Goss binary from %s into %s", release_url, self.bin_dir)
 
         status, _, response = self.request(release_url)
@@ -344,15 +342,6 @@ class Degoss(object):
         with open(self.executable, 'wb') as f:
 
             shutil.copyfileobj(response, f)
-            # buffered read at 8KiB chunks
-            #chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
-            #chunk = response.read(BUFFER_SIZE)
-
-            #while chunk:
-                #f.write(chunk)
-                #chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
-                #chunk = response.read(BUFFER_SIZE)
-
             response.close()
 
         if self.os in ('linux', 'darwin'):
