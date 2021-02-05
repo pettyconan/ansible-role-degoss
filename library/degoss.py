@@ -399,7 +399,7 @@ class Degoss(object):
             self.test_dir, dict(os.environ))
 
         p = subprocess.Popen(cli_arguments, cwd=self.test_dir, env=dict(os.environ), stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+            stderr=subprocess.STDOUT, stdin=subprocess.PIPE, encoding='utf8')
 
         stdout, _ = p.communicate(input=json.dumps(goss_variables))
 
