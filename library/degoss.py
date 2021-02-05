@@ -345,10 +345,6 @@ class Degoss(object):
             # buffered read at 8KiB chunks
             chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
 
-            # bytes to str for python3 file.write() support
-            if isinstance(chunk, bytes):
-                    chunk = chunk.decode(encoding='cp437')
-
             while chunk:
                 f.write(chunk)
                 chunk = self.decode_if_byte(response.read(BUFFER_SIZE))
