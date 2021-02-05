@@ -350,12 +350,6 @@ class Degoss(object):
 
         self.logger.debug("Successfully installed the binary to %s", self.executable)
 
-    def decode_if_byte(self, chunk):
-        if isinstance(chunk, bytes):
-            return chunk.decode(encoding='cp437')
-        else:
-            return chunk
-
     def test(self):
         """Execute the test cases."""
         # deserialize the facts; note that when passing in a dictionary from Ansible as an argument, it is serialized
