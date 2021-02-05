@@ -334,26 +334,27 @@ class Degoss(object):
         """Install the Goss binary."""
         release_url = self.get_release_url()
 
-        
+
 
         self.logger.info("Installing the Goss binary from %s into %s", release_url, self.bin_dir)
 
         status, _, response = self.request(release_url)
 
-        chunk = response.read(BUFFER_SIZE)
-        if isinstance(chunk, bytes):
-            with open(self.executable, 'wb') as f:
-                while chunk:
-                    f.write(chunk)
-                    chunk = response.read(BUFFER_SIZE)
-                response.close()
-        else:
-            with open(self.executable, 'w') as f:
-                while chunk:
-                    f.write(chunk)
-                    chunk = response.read(BUFFER_SIZE)
+        # write to a file
+        with open(self.executable, 'w') as f:
+            # buffered read at 8KiB chunks
+            chunk = response.read(BUFFER_SIZE)
 
-                response.close()
+            # bytes to str for python3 file.write() support
+            if isinstance(chunk, bytes):
+                    chunk = chunk.decode(encoding='windows-1252')
+
+            while chunk:
+                f.write(chunk)
+                chunk = response.read(BUFFER_SIZE)
+                chunk = chunk.decode(encoding='windows-1252')
+
+            response.close()
 
         if self.os in ('linux', 'darwin'):
             # make it executable by the current user
