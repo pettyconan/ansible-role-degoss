@@ -339,10 +339,20 @@ class Degoss(object):
         status, _, response = self.request(release_url)
 
         # write to a file
-        with open(self.executable, 'wb') as f:
+        if sys.version_info.major < 3:
+            with open(self.executable, 'w') as f:
+                # buffered read at 8KiB chunks
+                chunk = response.read(BUFFER_SIZE)
 
-            shutil.copyfileobj(response, f)
-            response.close()
+                while chunk:
+                    f.write(chunk)
+                    chunk = response.read(BUFFER_SIZE)
+
+                response.close()
+        else:
+             with open(self.executable, 'wb') as f:
+                shutil.copyfileobj(response, f)
+                response.close()
 
         if self.os in ('linux', 'darwin'):
             # make it executable by the current user
@@ -381,8 +391,12 @@ class Degoss(object):
         self.logger.debug("Executing Goss as \"%s\" in %s; environment variables: %s", " ".join(cli_arguments),
             self.test_dir, dict(os.environ))
 
-        p = subprocess.Popen(cli_arguments, cwd=self.test_dir, env=dict(os.environ), stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT, stdin=subprocess.PIPE, encoding='utf8')
+        if sys.version_info.major < 3:
+            p = subprocess.Popen(cli_arguments, cwd=self.test_dir, env=dict(os.environ), stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+        else:
+            p = subprocess.Popen(cli_arguments, cwd=self.test_dir, env=dict(os.environ), stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT, stdin=subprocess.PIPE, encoding='utf8')
 
         stdout, _ = p.communicate(input=json.dumps(goss_variables))
 
